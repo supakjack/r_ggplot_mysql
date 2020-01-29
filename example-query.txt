@@ -1,0 +1,38 @@
+SELECT 
+	                        TABLE_NAME AS name ,
+                          COUNT(TABLE_SCHEMA) AS number
+                          FROM COLUMNS
+                        GROUP BY TABLE_NAME
+
+SELECT 
+	                        TABLE_NAME AS name ,
+                          COUNT(TABLE_SCHEMA) AS number
+                          FROM COLUMNS
+                         GROUP BY TABLE_NAME
+#################################################################################################
+SELECT 
+  	                      NUMBER AS number, 
+                          COUNT(NUMBER) AS scale
+                          FROM (
+                                  SELECT 
+		                                CASE 
+    		                              WHEN COUNT(TABLE_SCHEMA) >10 THEN 'more than 10'
+        		                        ELSE 'less than 10' END
+       	                          AS NUMBER
+                                  FROM COLUMNS
+                                  GROUP BY TABLE_NAME
+                              ) AS TB_NUMBER
+                          GROUP BY NUMBER
+###############################################################################################
+SELECT NAME , 
+		FILE_SIZE ,
+		 (CASE 
+			WHEN FILE_SIZE > (SELECT AVG(FILE_SIZE) FROM INNODB_SYS_TABLESPACES) THEN "More than mean"
+			WHEN FILE_SIZE < (SELECT AVG(FILE_SIZE) FROM INNODB_SYS_TABLESPACES) THEN "Less than mean" 
+		END) AS MEAN
+FROM INNODB_SYS_TABLESPACES
+##############################################################################################
+SELECT FILE_SIZE , COUNT(FILE_SIZE)
+FROM INNODB_SYS_TABLESPACES
+GROUP BY FILE_SIZE
+###############################################################################################
