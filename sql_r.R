@@ -143,3 +143,65 @@ ggplot(plotdata, aes(x = "", y = prop, fill = DATA_TYPE)) +
     geom_treemap_text(colour = "white", place = "centre") +
     labs(title = "Marriages by DATA_TYPE")+
     theme(legend.position = "none")
+  
+  ####################################################################################################
+  # Create a kernel density plot of DATA_TYPE
+  library(dplyr)
+  library(ggplot2)
+  library(RMySQL)
+  con = dbConnect(MySQL(),user="root",password="",dbname="information_schema",host="127.0.0.1")
+  query <- dbGetQuery(con,"SELECT 
+	                          a.DATA_TYPE , (	
+        			                              SELECT 
+        				                            COUNT(b.DATA_TYPE) 
+        			                              FROM COLUMNS AS b
+        			                              WHERE b.DATA_TYPE = a.DATA_TYPE 	
+    			                                )AS n
+                          FROM COLUMNS AS a")
+  dbDisconnect(con)
+  # Create a kernel density plot of DATA_TYPE
+  ggplot(query, aes(x = n)) +
+    geom_density(fill = "indianred3") +
+    labs(title = "Participants by n")
+  
+  
+  # Plot ages as a dot plot using
+  library(dplyr)
+  library(ggplot2)
+  library(RMySQL)
+  con = dbConnect(MySQL(),user="root",password="",dbname="information_schema",host="127.0.0.1")
+  query <- dbGetQuery(con,"SELECT 
+	                          a.DATA_TYPE , (	
+        			                              SELECT 
+        				                            COUNT(b.DATA_TYPE) 
+        			                              FROM COLUMNS AS b
+        			                              WHERE b.DATA_TYPE = a.DATA_TYPE 	
+    			                                )AS n
+                          FROM COLUMNS AS a")
+  dbDisconnect(con)
+  # gold dots with black borders
+  ggplot(query, aes(x = DATA_TYPE)) +
+    geom_dotplot(fill = "gold", color = "black") +
+    labs(title = "Participants by age", y = "Proportion", x = "DATA_TYPE")
+  
+  
+  ###################################################################################################################
+  
+  # stacked bar chart
+  library(dplyr)
+  library(ggplot2)
+  library(RMySQL)
+  con = dbConnect(MySQL(),user="root",password="",dbname="information_schema",host="127.0.0.1")
+  query <- dbGetQuery(con,"SELECT 
+	                          a.DATA_TYPE , (	
+        			                              SELECT 
+        				                            COUNT(b.DATA_TYPE) 
+        			                              FROM COLUMNS AS b
+        			                              WHERE b.DATA_TYPE = a.DATA_TYPE 	
+    			                                )AS n
+                          FROM COLUMNS AS a")
+  dbDisconnect(con)
+  ggplot(query,
+         aes(x = DATA_TYPE,
+             fill = n)) +
+    geom_bar(position = "stack")
